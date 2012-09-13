@@ -10,6 +10,9 @@ end
 %w{ debian ubuntu centos redhat fedora }.each do |os|
   supports os
 end
+%w{ mongodb }.each do |cb|
+  suggests cb
+end
 
 recipe "zncrypt::default", "Installs and configures zNcrypt"
 recipe "zncrypt::cassandra", "Installs and configures DataStax Cassandra"

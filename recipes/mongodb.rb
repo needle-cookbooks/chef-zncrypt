@@ -18,55 +18,17 @@
 # limitations under the License.
 #
 
-# setup the proper 10gen repositories for the distro
 case node['platform_family']
-when "rhel","fedora"
- # use the yum cookbook
- include_recipe "yum::yum"
- # Add the 10gen repo, redhat centos fedora
- yum_repository "10gen" do
-  repo_name "10gen"
-  description "10gen Repository"
-  url "http://downloads-distro.mongodb.org/repo/redhat/os/x86_64"
-  action :add
- end
-when "debian"
- # use the apt cookbook
- include_recipe "apt::default"
- # Add the 10gen repo, ubuntu debian
- apt_repository "10gen" do
-  uri "http://downloads-distro.mongodb.org/repo/ubuntu-upstart"
-  distribution "dist"
-  components ["10gen"]
-  key "http://docs.mongodb.org/10gen-gpg-key.asc"
-  action :add
-  notifies :run, resources(:execute => "apt-get update"), :immediately
- end
-else
-  Chef::Application.fatal!("Your distro is not yet supported/tested, patches welcome!")
-end
-
-
-# assemble the packages
-mongo_packages = case node['platform_family']
 when "rhel","fedora"
  data_dir="/var/lib/mongo"
  service_name="mongod"
- include_recipe "yum::yum"
- %w{mongo-10gen mongo-10gen-server}
 when "debian"
  data_dir="/var/lib/mongodb"
  service_name="mongodb"
- %w{mongodb-10gen}
 end
 
-
-# loop to install packages
-mongo_packages.each do |mongo_pack|
-  package mongo_pack do
-    action :install
-  end
-end
+# let the mongodb cookbook do our heavy lifting
+include_recipe "mongodb::default"
 
 # Mongo is installed, we proceed to set up the encryption
 # the path here is hardcoded, if it does not match yours edit here
