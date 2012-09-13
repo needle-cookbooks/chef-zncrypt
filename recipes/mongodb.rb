@@ -32,8 +32,9 @@ include_recipe "mongodb::default"
 
 # Mongo is installed, we proceed to set up the encryption
 # the path here is hardcoded, if it does not match yours edit here
-acl_rule1="/usr/bin/mongod"
-acl_rule2="/bin/mkdir"
+
+acl_rule1 = which("mongod").first
+acl_rule2 = which("mkdir").first
 
 # before anything we stop mongodb
 # create the ACLs
