@@ -1,11 +1,5 @@
 action :activate
 
-  =begin
-    zncrypt_license "i can type literally anything in here, who cares?" do
-      passphrase "ermahgerd"
-    end
-  =end
-
   ensure_data_bag(new_resource.data_bag)
   licenses = search(new_resource.data_bag, "available:true")
 
