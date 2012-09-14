@@ -3,7 +3,7 @@ action :activate
   ensure_data_bag(new_resource.data_bag)
   licenses = search(new_resource.data_bag, "available:true")
 
-  unless license_bag.empty? do
+  unless license_bag.empty?
     # select an available licence from the bag
     license = licenses.sample.raw_data
     license['passphrase'] = new_resource.passphrase
