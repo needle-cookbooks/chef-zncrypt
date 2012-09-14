@@ -43,6 +43,15 @@ action :activate do
     raise
   end
 
+  ruby_block "save license to node" do
+    block do
+      node['zncrypt']['license'] = new_resource.license
+      node.save
+      new_resource.updated_by_last_action(true)
+    end
+    action :nothing
+  end
+
   activate_args="--activate --license=#{license['id']} --activation-code=#{license['activation_code']} --passphrase=#{license['passphrase']}"
 
   activate_args + " --passphrase2=#{license['salt']}" if license['salt']
@@ -56,10 +65,8 @@ action :activate do
     ezncrypt-activate #{activate_args}
     EOH
     not_if { node['zncrypt']['license'] == new_resource.license }
+    notifies :create, "ruby_block['save_license']", :immediately
   end
-
-  node['zncrypt']['license'] = new_resource.license
-  node.save
 
 end
   
