@@ -55,8 +55,11 @@ action :activate do
     code <<-EOH
     ezncrypt-activate #{activate_args}
     EOH
-    not_if {::File.exists?('/etc/ezncrypt/license/standard-license.key')}
+    not_if { node['zncrypt']['license'] == new_resource.license }
   end
+
+  node['zncrypt']['license'] = new_resource.license
+  node.save
 
 end
   
