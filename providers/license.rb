@@ -1,3 +1,8 @@
+def initialize(*args)
+  super
+  @action = :activate
+end
+
 action :activate do
 
   ensure_data_bag(new_resource.data_bag)
