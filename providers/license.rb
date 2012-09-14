@@ -1,4 +1,4 @@
-action :activate
+action :activate do
 
   ensure_data_bag(new_resource.data_bag)
   licenses = search(new_resource.data_bag, "available:true")
