@@ -20,21 +20,22 @@ action :activate do
      "passphrase" => new_resource.passphrase,
      "available" => false,
      "allocated_to" => node['name']
-    }
+   }
 
     # the salt is optional (also referred to as second passphrase)
-    if new_resource.salt do
+    if new_resource.salt
       license['salt'] = new_resource.salt
     end
+  end
 
-    begin
-      databag_item = Chef::DataBagItem.new
-      databag_item.data_bag(new_resource.data_bag)
-      databag_item.raw_data = license
-      databag_item.save
-    rescue => e
-      Chef::Log.fatal(e)
-    end
+  begin
+    databag_item = Chef::DataBagItem.new
+    databag_item.data_bag(new_resource.data_bag)
+    databag_item.raw_data = license
+    databag_item.save
+  rescue => e
+    Chef::Log.fatal(e)
+    raise
   end
 
   activate_args="--activate --license=#{license['id']} --activation-code=#{license['activation_code']} --passphrase=#{license['passphrase']}"
@@ -53,3 +54,4 @@ action :activate do
   end
 
 end
+  
