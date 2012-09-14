@@ -46,6 +46,7 @@ action :activate do
   ruby_block "save license to node" do
     block do
       node['zncrypt']['license'] = new_resource.license
+      node['zncrypt']['activation_code'] = new_resource.activation_code
       node.save
       new_resource.updated_by_last_action(true)
     end
