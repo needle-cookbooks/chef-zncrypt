@@ -3,7 +3,7 @@ action :activate do
   ensure_data_bag(new_resource.data_bag)
   licenses = search(new_resource.data_bag, "available:true")
 
-  unless license_bag.empty?
+  unless licenses.empty?
     # select an available licence from the bag
     license = licenses.sample.raw_data
     license['passphrase'] = new_resource.passphrase
@@ -20,7 +20,7 @@ action :activate do
      "passphrase" => new_resource.passphrase,
      "available" => false,
      "allocated_to" => node['name']
-   }
+    }
 
     # the salt is optional (also referred to as second passphrase)
     if new_resource.salt
