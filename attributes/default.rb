@@ -25,4 +25,4 @@ default['zncrypt']['zncrypt_mount'] = '/var/lib/ezncrypt/ezncrypted'
 # setup the storage directory for zncrypt
 default['zncrypt']['zncrypt_storage'] = '/var/lib/ezncrypt/storage'
 # store the active license for this node
-default['zncrypt']['license']
+default['zncrypt']['license'] = false
