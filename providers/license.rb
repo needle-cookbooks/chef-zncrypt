@@ -7,8 +7,8 @@ end
 
 def load_current_resource
   @current_resource = Chef::Resource::ZncryptLicense.new(@@new_resource.name)
-  @current_resource.license = zncrypt_license
-  @current_resource.activation_code = zncrypt_activation
+  @current_resource.license = get_zncrypt_license
+  @current_resource.activation_code = get_zncrypt_activation
   @current_resource.passphrase = false
 
   @current_resource
