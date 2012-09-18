@@ -69,6 +69,7 @@ action :activate do
     # first, we save both the updated license_index and new license data to the data bag
     [ @license_index, @license_data ].each do |lic|
       begin
+        Chef::Log.debug("attempting to save #{lic[:id]} to data bag #{@new_resource.data_bag}")
         databag_item = Chef::DataBagItem.new
         databag_item.data_bag(@new_resource.data_bag)
         databag_item.raw_data = lic
