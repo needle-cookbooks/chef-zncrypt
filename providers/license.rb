@@ -41,7 +41,7 @@ action :activate do
         Chef::Log.debug("zncrypt: found #{@available_licenses.count} available licenses \n" + @available_licenses.inspect)
         # select available licence from the index
         items = @available_licenses.values
-        @selected_license = licenses[rand(items.length)]
+        @selected_license = @available_licenses[rand(items.length)]
 
         @license_data.merge!({
           :license => @selected_license.keys[0],
