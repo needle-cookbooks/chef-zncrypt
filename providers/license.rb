@@ -24,12 +24,12 @@ action :activate do
       :passphrase => @new_resource.passphrase
     }
 
-    if @new_resource.salt
+    unless @new_resource.salt.empty?
       # the salt is optional (also referred to as second passphrase)
       @license_data.merge!({ :salt => @new_resource.salt })
     end
 
-    if @new_resource.license and @new_resource.activation_code
+    unless @new_resource.license.empty? and @new_resource.activation_code.empty?
       # use license and activation code from LWRP, if they have been passed in
       @license_data.merge!({
         :license => @new_resource.license,
