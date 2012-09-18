@@ -58,7 +58,7 @@ action :activate do
     end
 
     # now we'll generate a unique ID for the license using a sha1 hash
-    @license_data.merge!({:id => Digest::SHA1.hexdigest(@license_data[:license]+node['name'])})
+    @license_data.merge!({:id => Digest::SHA1.hexdigest(@license_data[:license]+@new_resource.name+Time.new.usec.to_s)})
 
     # by this point we should have generated a license hash from:
     # a) values passed by the LWRP
