@@ -40,8 +40,7 @@ action :activate do
       unless @available_licenses.empty?
         Chef::Log.debug("zncrypt: found #{@available_licenses.count} available licenses \n" + @available_licenses.inspect)
         # select available licence from the index
-        items = @available_licenses.keys.count
-        @selected_license = @available_licenses[rand(items.length)]
+        @selected_license = @available_licenses[rand(@available_licenses.keys.count)]
 
         @license_data.merge!({
           :license => @selected_license.keys[0],
