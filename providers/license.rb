@@ -64,11 +64,11 @@ action :activate do
     # a) values passed by the LWRP
     # b) values retrieved from the license index in the data bag
     # c) the dummy license provided by gazzang's own cookbook
-    Chef::Log.debug("zncrypt_license: " + @license_data.inspect)
-    Chef::Log.debug("available licenses: " + @available_licenses.inspect)
+    Chef::Log.info("zncrypt license: " + @license_data.inspect)
+    Chef::Log.debug("zncrypt available licenses: " + @available_licenses.inspect)
 
-    # now we must save our work
-
+    # now it is time to save our work
+    # generate a new license index, now minus the license we just used up.
     @license_index = { :id => "license_index", :licenses => @available_licenses }
 
     # first, we save both the updated license_index and new license data to the data bag
