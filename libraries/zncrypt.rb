@@ -12,6 +12,8 @@ def zncrypt_activation
   if zncrypt_licensed?
     lines = IO.readlines(ZNCRYPT_LICENSE_FILE)
     return lines[1].chop
+  else
+    return false
   end
 end
 
@@ -19,5 +21,7 @@ def zncrypt_license
   if zncrypt_licensed?
     lines = IO.readlines(ZNCRYPT_LICENSE_FILE)
     return lines[0].chop
+  else
+    return false
   end
 end
