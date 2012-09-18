@@ -29,9 +29,16 @@ action :activate do
     else
       # otherwise, try looking in the data bag for an available license
       ensure_data_bag(@new_resource.data_bag)
-      @available_licenses = search(@new_resource.data_bag, "id:license_index")['licenses']
+
+      begin
+        @available_licenses = search(@new_resource.data_bag, "id:license_index").first['licenses']
+      rescue => e
+        @available_licenses = { }
+        Chef::Log.warn("zncrypt: error loading license index from #{@new_resource.data_bag} data bag")
+      end
 
       unless @available_licenses.empty?
+        Chef::Log.debug("zncrypt: found #{@available_licenses.count} available licenses \n" + @available_licenses.inspect)
         # select available licence from the index
         items = @available_licenses.values
         @selected_license = licenses[rand(items.length)]
