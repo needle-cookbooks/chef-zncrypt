@@ -5,18 +5,9 @@ def initialize(*args)
   @action = :activate
 end
 
-def load_current_resource
-  @current_resource = Chef::Resource::ZncryptLicense.new(@new_resource.name)
-  @current_resource.license = get_zncrypt_license
-  @current_resource.activation_code = get_zncrypt_activation
-  @current_resource.passphrase = false
-
-  @current_resource
-end
-
 action :activate do
 
-  unless @current_resource.license and @current_resource.activation_code
+  unless get_zncrypt_license and get_zncrypt_activation
 
     # construct a hash where we store the license data
     @license_data = {
