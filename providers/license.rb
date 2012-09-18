@@ -40,15 +40,11 @@ action :activate do
       unless @available_licenses.empty?
         Chef::Log.debug("zncrypt: found #{@available_licenses.count} available licenses \n" + @available_licenses.inspect)
         # select available licence from the index
-        @selected_license = @available_licenses[rand(@available_licenses.keys.count)]
-
+        @selected_license = @available_licenses.shift
         @license_data.merge!({
-          :license => @selected_license.keys[0],
-          :activation_code => @selected_license.values[0]
+          :license => @selected_license[0],
+          :activation_code => @selected_license[1]
         })
-
-        # remove the license we've allocated to this node from the index
-        @available_licenses.delete(@license_data[:license])
       else
         # we haven't been passed a license/activation code, and 
         # there are no available licenses in the bag, so we'll make one.
