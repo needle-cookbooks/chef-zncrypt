@@ -1,10 +1,5 @@
 require 'digest/sha1'
 
-def initialize(*args)
-  super
-  @action = :activate
-end
-
 action :activate do
 
   unless get_zncrypt_license and get_zncrypt_activation

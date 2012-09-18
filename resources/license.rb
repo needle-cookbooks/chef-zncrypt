@@ -1,3 +1,9 @@
+
+def initialize(*args)
+  super
+  @action = :activate
+end
+
 actions :activate
 
 attribute :license,         :kind_of => String, :default => String.new
