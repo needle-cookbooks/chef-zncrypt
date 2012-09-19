@@ -6,7 +6,7 @@ action :activate do
 
     # construct a hash where we store the license data
     @license_data = {
-      'allocated_to' => node['name'],
+      'allocated_to' => node['hostname'],
       'passphrase' => @new_resource.passphrase
     }
 
@@ -82,7 +82,7 @@ action :activate do
 
     # save the license and activation code to the node data, just for good measure,
     # but only after we've been notified by the "activate ezncrypt" script resource
-    ruby_block "save license for #{node['name']} to node object" do
+    ruby_block "save license for #{node['hostname']} to node object" do
       block do
         node['zncrypt']['license'] = @license_data['license']
         node['zncrypt']['activation_code'] = @license_data['activation_code']
@@ -98,7 +98,7 @@ action :activate do
 
     directory "/var/log/ezncrypt"
 
-    script "activate zNcrypt for #{node['name']}" do
+    script "activate zncrypt for #{node['hostname']}" do
       interpreter "bash"
       user "root"
       code <<-EOH
