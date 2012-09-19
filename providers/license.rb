@@ -66,8 +66,6 @@ action :activate do
     # generate a new license index, now minus the license we just used up.
     @license_index = { :id => "license_index", :licenses => @available_licenses }
 
-    breakpoint "license_generated"
-
     # first, we save both the updated license_index and new license data to the data bag
     [ @license_index, @license_data ].each do |lic|
       begin
@@ -81,8 +79,6 @@ action :activate do
         raise
       end
     end
-
-    breakpoint "license_saved_data_bag"
 
     # save the license and activation code to the node data, just for good measure,
     # but only after we've been notified by the "activate ezncrypt" script resource
