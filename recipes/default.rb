@@ -24,3 +24,5 @@
 include_recipe "zncrypt::zncrypt"
 # configures the directories using the configuraiton from the databag
 include_recipe "zncrypt::configdirs"
+# activates the license using the data bag 
+include_recipe "zncrypt::activate"
