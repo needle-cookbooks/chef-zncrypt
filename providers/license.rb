@@ -104,7 +104,6 @@ action :activate do
       code <<-EOH
       ezncrypt-activate #{activate_args}
       EOH
-      not_if { node['zncrypt']['license'] == @license_data['license'] }
       notifies :create, "ruby_block[save license for #{node['hostname']} to node object]", :immediately
     end
 
