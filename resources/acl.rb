@@ -1,7 +1,7 @@
 #
 # Author:: Cameron Johnston (cameron@needle.com)
 # Cookbook Name:: zncrypt
-# Resource:: license
+# Resource:: acl
 #
 # Copyright 2012, Needle, Inc.
 #
@@ -20,11 +20,12 @@
 
 def initialize(*args)
   super
-  @action = :allow
+  @action = :add
 end
 
-actions :allow, :deny
+actions :add, :remove
 
+attribute :permission, :kind_of => String, :default => "ALLOW", :regex => /(^ALLOW$|^DENY$)/
 attribute :category,   :kind_of => String, :required => true
 attribute :path,       :kind_of => String, :required => true, :default => "*"
 attribute :process,    :kind_of => String, :required => true, :name_attribute => true

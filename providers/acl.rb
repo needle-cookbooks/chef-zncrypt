@@ -20,13 +20,13 @@
 
 @licenses = []
 @license_data = false
-@cmd_path = which('ezncrypt-access-control').first
-@cmd_args = false
+@cmd_path = 'ezncrypt-access-control'
 
 begin
   @licenses = search(@new_resource.data_bag, "allocated_to:#{node['hostname']}")
   if @licenses.count = 1
     @license_data = @licenses.first
+    Chef::Log.debug("zncrypt acl: successfully loaded license: \n" + @license_data )
   else
     Chef::Log.fatal("zncrypt acl: found multiple licenses for node #{node['hostname']} in the #{@new_resource.data_bag} data bag, cannot proceed.")
     raise
@@ -36,48 +36,52 @@ rescue
   raise
 end
 
-action :allow do
-  unless @license_data['passphrase']
-    @cmd_args = "-a ALLOW @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{@license_data['passphrase']}}"
+action :add do
+  if @license_data['passphrase']
+    rule_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{@license_data['passphrase']}}"
     if @license_data['salt']
-      @cmd_args + " -S #{@license_data['salt']}"
+      rule_args + " -S #{@license_data['salt']}"
     end
     unless @new_resource.executable.empty?
-      @cmd_args + " --exec=#{@new_resource.executable}"
+      rule_args + " --exec=#{@new_resource.executable}"
     end
     unless @new_resource.children.empty?
-      @cmd_args + " --children=#{@new_resource.children}"
+      rule_args + " --children=#{@new_resource.children}"
     end
+    cmd_args = "-a \"#{rule_args}\""
   else
     Chef::Log.fatal("zncrypt acl: failed to load passphrase from license data from the #{@new_resource.data_bag}, cannot proceed")
     raise
   end
 
-  execute "allow #{@new_resource.path} for #{@new_resource.category} category" do
-    command "#{cmd_path} #{cmd_args}"
+  execute "#{@new_resource.permission} #{@new_resource.path} for #{@new_resource.process} in category #{@new_resource.category}" do
+    command "#{@cmd_path} #{cmd_args}"
     action :run
+    returns [0,1]
   end
 end
 
-action :deny do
-  unless @license_data['passphrase']
-    @cmd_args = "-a DENY @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{@license_data['passphrase']}}"
+action :remove do
+  if @license_data['passphrase']
+    rule_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{@license_data['passphrase']}}"
     if @license_data['salt']
-      @cmd_args + " -S #{@license_data['salt']}"
+      rule_args + " -S #{@license_data['salt']}"
     end
     unless @new_resource.executable.empty?
-      @cmd_args + " --exec=#{@new_resource.executable}"
+      rule_args + " --exec=#{@new_resource.executable}"
     end
     unless @new_resource.children.empty?
-      @cmd_args + " --children=#{@new_resource.children}"
+      rule_args + " --children=#{@new_resource.children}"
     end
+    cmd_args = "-d \"#{rule_args}\""
   else
     Chef::Log.fatal("zncrypt acl: failed to load passphrase from license data from the #{@new_resource.data_bag}, cannot proceed")
     raise
   end
 
-  execute "allow #{@new_resource.path} for #{@new_resource.category} category" do
-    command "#{cmd_path} #{cmd_args}"
+  execute "#{@new_resource.permission} #{@new_resource.path} for #{@new_resource.process} in category #{@new_resource.category}" do
+    command "#{@cmd_path} #{cmd_args}"
     action :run
+    returns [0,1]
   end
 end
