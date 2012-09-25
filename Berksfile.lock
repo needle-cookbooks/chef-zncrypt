@@ -1,0 +1,5 @@
+cookbook 'zncrypt', :path => '/Users/cwj/chef/zncrypt'
+cookbook 'yum', :locked_version => '0.6.2'
+cookbook 'apt', :locked_version => '1.4.4'
+cookbook 'openssl', :locked_version => '1.0.0'
+cookbook 'java', :locked_version => '1.5.2'
