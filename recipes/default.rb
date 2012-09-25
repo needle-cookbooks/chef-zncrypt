@@ -22,7 +22,30 @@
 
 # installs zncrypt
 include_recipe "zncrypt::zncrypt"
-# configures the directories using the configuraiton from the databag
-include_recipe "zncrypt::configdirs"
+
+# configure the required directories
+config_dirs = "-m #{node['zncrypt']['zncrypt_mount']} -s #{node['zncrypt']['zncrypt_storage']}"
+
+case node['platform_family']
+when "rhel","fedora"
+ opt = '-l'
+when "debian"
+ opt = '-a'
+end
+
+script "config dirs" do
+ interpreter "bash"
+ user "root"
+ code <<-EOH
+ ezncrypt-service stop
+ ezncrypt-configure-directories #{config_dirs} #{opt}
+ EOH
+end
+
+# create a resource for managing the ezncrypt service, but don't do anything with it here
+service "ezncrypt" do
+  action :nothing
+end
+
 # activates the license using the data bag 
 include_recipe "zncrypt::activate"
