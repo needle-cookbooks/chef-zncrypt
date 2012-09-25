@@ -47,5 +47,7 @@ service "ezncrypt" do
   action :nothing
 end
 
-# activates the license using the data bag 
-include_recipe "zncrypt::activate"
+# activates the license using the data bag and randomly generated passphrases
+if node['zncrypt']['use_default_activation']
+  include_recipe "zncrypt::activate"
+end

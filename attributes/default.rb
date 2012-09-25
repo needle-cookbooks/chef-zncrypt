@@ -24,5 +24,5 @@
 default['zncrypt']['zncrypt_mount'] = '/var/lib/ezncrypt/ezncrypted'
 # setup the storage directory for zncrypt
 default['zncrypt']['zncrypt_storage'] = '/var/lib/ezncrypt/storage'
-# store the active license for this node
-default['zncrypt']['license'] = false
+# include `activate` recipe when running default recipe
+default['zncrypt']['use_default_activation'] = false

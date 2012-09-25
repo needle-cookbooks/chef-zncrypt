@@ -60,7 +60,7 @@ action :activate do
           'license' => @selected_license[0],
           'activation_code' => @selected_license[1]
         })
-      else
+      elsif @new_resource.allow_trial
         # we haven't been passed a license/activation code, and 
         # there are no available licenses in the bag, so we'll make one.
         # the default license will auto reset every hour if your first registration fails, 
@@ -69,6 +69,9 @@ action :activate do
          'license' => "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
          'activation_code' => "123412341234"
         })
+      else
+        Chef::Log.fatal('zncrypt: failed to locate an available license and allow_trial is false. exiting.')
+        raise
       end
     end
 
