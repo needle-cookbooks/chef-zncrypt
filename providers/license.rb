@@ -52,7 +52,7 @@ action :activate do
         Chef::Log.warn("zncrypt: error loading license index from #{@new_resource.data_bag} data bag")
       end
 
-      unless @available_licenses.empty?
+      if !@available_licenses.empty?
         Chef::Log.debug("zncrypt: found #{@available_licenses.count} available licenses \n" + @available_licenses.inspect)
         # select available licence from the index
         @selected_license = @available_licenses.shift
