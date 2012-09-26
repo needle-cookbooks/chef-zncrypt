@@ -32,4 +32,3 @@ attribute :process,    :kind_of => String, :required => true, :name_attribute =>
 attribute :executable, :kind_of => String
 attribute :children,   :kind_of => String
 attribute :data_bag,   :kind_of => String, :required => true, :default => 'zncrypt_license_pool'
-attribute :hostname,   :kind_of => String, :required => true, :default => node['hostname']
