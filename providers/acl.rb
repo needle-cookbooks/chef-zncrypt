@@ -23,16 +23,16 @@
 @cmd_path = 'ezncrypt-access-control'
 
 begin
-  @licenses = search(@new_resource.data_bag, "allocated_to:#{node['hostname']}")
+  @licenses = search(@new_resource.data_bag, "allocated_to:#{@new_resource.hostname}")
   if @licenses.count = 1
     @license_data = @licenses.first
     Chef::Log.debug("zncrypt acl: successfully loaded license: \n" + @license_data )
   else
-    Chef::Log.fatal("zncrypt acl: found multiple licenses for node #{node['hostname']} in the #{@new_resource.data_bag} data bag, cannot proceed.")
+    Chef::Log.fatal("zncrypt acl: found multiple licenses for node #{@new_resource.hostname} in the #{@new_resource.data_bag} data bag, cannot proceed.")
     raise
   end
 rescue
-  Chef::Log.fatal("zncrypt acl: failed to locate a license for node #{node['hostname']} in the #{@new_resource.data_bag} data bag, cannot proceed.")
+  Chef::Log.fatal("zncrypt acl: failed to locate a license for node #{@new_resource.hostname} in the #{@new_resource.data_bag} data bag, cannot proceed.")
   raise
 end
 
