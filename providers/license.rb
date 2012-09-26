@@ -103,17 +103,6 @@ action :activate do
       end
     end
 
-    # save the license and activation code to the node data, just for good measure,
-    # but only after we've been notified by the "activate ezncrypt" script resource
-    ruby_block "save license for #{node['hostname']} to node object" do
-      block do
-        node['zncrypt']['license'] = @license_data['license']
-        node['zncrypt']['activation_code'] = @license_data['activation_code']
-        @new_resource.updated_by_last_action(true)
-      end
-      action :nothing
-    end
-
     activate_args="--activate --license=#{@license_data['license']} --activation-code=#{@license_data['activation_code']} --passphrase=#{@license_data['passphrase']}"
 
     activate_args + " --passphrase2=#{@license_data['salt']}" if @license_data['salt']
