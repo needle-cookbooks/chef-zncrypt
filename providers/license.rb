@@ -109,7 +109,6 @@ action :activate do
       block do
         node['zncrypt']['license'] = @license_data['license']
         node['zncrypt']['activation_code'] = @license_data['activation_code']
-        node.save
         @new_resource.updated_by_last_action(true)
       end
       action :nothing
