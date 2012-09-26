@@ -18,29 +18,32 @@
 # limitations under the License.
 #
 
-@licenses = []
-@license_data = false
 @cmd_path = 'ezncrypt-access-control'
 
-begin
-  @licenses = search(@new_resource.data_bag, "allocated_to:#{node['hostname']}")
-  if @licenses.count = 1
-    @license_data = @licenses.first
-    Chef::Log.debug("zncrypt acl: successfully loaded license: \n" + @license_data )
-  else
-    Chef::Log.fatal("zncrypt acl: found multiple licenses for node #{node['hostname']} in the #{@new_resource.data_bag} data bag, cannot proceed.")
+def load_license(data_bag)
+  begin
+    licenses = search(data_bag, "allocated_to:#{node['hostname']}")
+    if licenses.count = 1
+      Chef::Log.debug("zncrypt acl: successfully loaded license: \n" + licenses.first )
+      return licenses.first
+    else
+      Chef::Log.fatal("zncrypt acl: found multiple licenses for node #{node['hostname']} in the #{data_bag} data bag, cannot proceed.")
+      raise
+    end
+  rescue
+    Chef::Log.fatal("zncrypt acl: failed to locate a license for node #{node['hostname']} in the #{data_bag} data bag, cannot proceed.")
     raise
   end
-rescue
-  Chef::Log.fatal("zncrypt acl: failed to locate a license for node #{node['hostname']} in the #{@new_resource.data_bag} data bag, cannot proceed.")
-  raise
 end
 
 action :add do
-  if @license_data['passphrase']
-    rule_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{@license_data['passphrase']}}"
-    if @license_data['salt']
-      rule_args + " -S #{@license_data['salt']}"
+
+  license_data = load_license(@new_resource.data_bag)
+
+  if license_data['passphrase']
+    rule_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{license_data['passphrase']}}"
+    if license_data['salt']
+      rule_args + " -S #{license_data['salt']}"
     end
     unless @new_resource.executable.empty?
       rule_args + " --exec=#{@new_resource.executable}"
@@ -62,10 +65,13 @@ action :add do
 end
 
 action :remove do
-  if @license_data['passphrase']
-    rule_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{@license_data['passphrase']}}"
-    if @license_data['salt']
-      rule_args + " -S #{@license_data['salt']}"
+
+  license_data = load_license(@new_resource.data_bag)
+
+  if license_data['passphrase']
+    rule_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{license_data['passphrase']}}"
+    if license_data['salt']
+      rule_args + " -S #{license_data['salt']}"
     end
     unless @new_resource.executable.empty?
       rule_args + " --exec=#{@new_resource.executable}"
