@@ -25,6 +25,7 @@ include_recipe "mongodb::default"
     category "mongodb"
     path "*"
     permission "ALLOW"
+    data_bag node['zncrypt']['license_pool']
   end
 end
 
