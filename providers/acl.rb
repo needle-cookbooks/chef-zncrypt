@@ -18,6 +18,10 @@
 # limitations under the License.
 #
 
+require 'chef/mixin/shell_out'
+require 'chef/mixin/language'
+include Chef::Mixin::ShellOut
+
 action :add do
 
   license_data = load_license(@new_resource.data_bag,node['hostname'])
@@ -40,10 +44,20 @@ action :add do
     raise
   end
 
-  execute "#{@new_resource.permission} #{@new_resource.path} for #{@new_resource.process} in category #{@new_resource.category}" do
-    command "ezncrypt-access-control #{cmd_args}"
-    action :run
-    returns [0,1]
+  cmd_result = Chef::Mixin::ShellOut.shell_out("ezncrypt-access-control #{cmd_args}")
+
+  case cmd_result.exitstatus
+  when 0
+    Chef::Log.info("zncrypt acl: rule '#{rule_args}' added successfully")
+    @new_resource.updated_by_last_action(true)
+  when 1
+    if cmd_result.stderr == "ERROR: Rule already exists\n"
+      Chef:Log.info("zncrypt acl: rule '#{rule_args}' already exists")
+      @new_resource.updated_by_last_action(false)
+    else
+      Chef::Log.fatal("zncrypt acl: failed to add rule '#{rule_args}':\n" + cmd_result.stderr.inspect)
+      raise
+    end
   end
 end
 
@@ -57,7 +71,7 @@ action :remove do
     if license_data['salt']
       auth_args = auth_args + " -S #{license_data['salt']}"
     end
-    cmd_args = "#{auth_args} -a \"#{rule_args}\""
+    cmd_args = "#{auth_args} -d \"#{rule_args}\""
     unless @new_resource.executable.nil?
       cmd_args = cmd_args + " --exec=#{@new_resource.executable}"
     end
@@ -69,9 +83,19 @@ action :remove do
     raise
   end
 
-  execute "#{@new_resource.permission} #{@new_resource.path} for #{@new_resource.process} in category #{@new_resource.category}" do
-    command "ezncrypt-access-control #{cmd_args}"
-    action :run
-    returns [0,1]
+  cmd_result = Chef::Mixin::ShellOut.shell_out("ezncrypt-access-control #{cmd_args}")
+
+  case cmd_result.exitstatus
+  when 0
+    Chef::Log.info("zncrypt acl: rule '#{rule_args}' removed successfully")
+    @new_resource.updated_by_last_action(true)
+  when 1
+    if cmd_result.stderr == "ERROR: Rule does not exists\n"
+      Chef:Log.info("zncrypt acl: rule '#{rule_args}' already exists")
+      @new_resource.updated_by_last_action(false)
+    else
+      Chef::Log.fatal("zncrypt acl: failed to remove rule '#{rule_args}':\n" + cmd_result.stderr.inspect)
+      raise
+    end
   end
 end
