@@ -11,9 +11,9 @@ end
 def load_license(bag,hostname)
   begin
     licenses = search(bag, "allocated_to:#{hostname}")
-    if licenses.count = 1
-      Chef::Log.debug("zncrypt acl: successfully loaded license: \n" + licenses.first )
-      return licenses.first
+    if licenses.count == 1
+      Chef::Log.debug("zncrypt acl: successfully loaded license: \n" + licenses.first.raw_data.inspect )
+      return licenses.first.raw_data
     else
       Chef::Log.fatal("zncrypt acl: found multiple licenses for node #{hostname} in the #{bag} data bag, cannot proceed.")
       raise
