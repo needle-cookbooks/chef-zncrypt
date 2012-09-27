@@ -23,9 +23,9 @@ action :add do
   license_data = load_license(@new_resource.data_bag,node['hostname'])
 
   if license_data['passphrase']
-    rule_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{license_data['passphrase']}}"
+    auth_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{license_data['passphrase']}}"
     if license_data['salt']
-      rule_args + " -S #{license_data['salt']}"
+      auth_args + " -S #{license_data['salt']}"
     end
     unless @new_resource.executable.nil?
       rule_args + " --exec=#{@new_resource.executable}"
@@ -33,7 +33,7 @@ action :add do
     unless @new_resource.children.nil?
       rule_args + " --children=#{@new_resource.children}"
     end
-    cmd_args = "-a \"#{rule_args}\""
+    cmd_args = "#{auth_args} -a \"#{rule_args}\""
   else
     Chef::Log.fatal("zncrypt acl: failed to load passphrase from license data from the #{@new_resource.data_bag}, cannot proceed")
     raise
@@ -51,9 +51,9 @@ action :remove do
   license_data = load_license(@new_resource.data_bag,node['hostname'])
 
   if license_data['passphrase']
-    rule_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{license_data['passphrase']}}"
+    auth_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{license_data['passphrase']}}"
     if license_data['salt']
-      rule_args + " -S #{license_data['salt']}"
+      auth_args + " -S #{license_data['salt']}"
     end
     unless @new_resource.executable.nil?
       rule_args + " --exec=#{@new_resource.executable}"
@@ -61,7 +61,7 @@ action :remove do
     unless @new_resource.children.nil?
       rule_args + " --children=#{@new_resource.children}"
     end
-    cmd_args = "-d \"#{rule_args}\""
+    cmd_args = "#{auth_args} -a \"#{rule_args}\""
   else
     Chef::Log.fatal("zncrypt acl: failed to load passphrase from license data from the #{@new_resource.data_bag}, cannot proceed")
     raise
