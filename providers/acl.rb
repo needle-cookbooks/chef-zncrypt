@@ -29,10 +29,10 @@ action :add do
     if license_data['salt']
       rule_args + " -S #{license_data['salt']}"
     end
-    unless @new_resource.executable.empty?
+    unless @new_resource.executable.nil?
       rule_args + " --exec=#{@new_resource.executable}"
     end
-    unless @new_resource.children.empty?
+    unless @new_resource.children.nil?
       rule_args + " --children=#{@new_resource.children}"
     end
     cmd_args = "-a \"#{rule_args}\""
@@ -57,10 +57,10 @@ action :remove do
     if license_data['salt']
       rule_args + " -S #{license_data['salt']}"
     end
-    unless @new_resource.executable.empty?
+    unless @new_resource.executable.nil?
       rule_args + " --exec=#{@new_resource.executable}"
     end
-    unless @new_resource.children.empty?
+    unless @new_resource.children.nil?
       rule_args + " --children=#{@new_resource.children}"
     end
     cmd_args = "-d \"#{rule_args}\""
