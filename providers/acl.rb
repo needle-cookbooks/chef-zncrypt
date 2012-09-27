@@ -32,13 +32,13 @@ action :add do
     if license_data['salt']
       auth_args = auth_args + " -S #{license_data['salt']}"
     end
-    cmd_args = "#{auth_args} -a \"#{rule_args}\""
     unless @new_resource.executable.nil?
-      cmd_args = cmd_args + " --exec=#{@new_resource.executable}"
+      rule_args = rule_args + " --exec=#{@new_resource.executable}"
     end
     unless @new_resource.children.nil?
-      cmd_args = cmd_args + " --children=#{@new_resource.children}"
+      rule_args = rule_args + " --children=#{@new_resource.children}"
     end
+    cmd_args = "#{auth_args} -a \"#{rule_args}\""
   else
     Chef::Log.fatal("zncrypt acl: failed to load passphrase from license data from the #{@new_resource.data_bag}, cannot proceed")
     raise
@@ -71,13 +71,13 @@ action :remove do
     if license_data['salt']
       auth_args = auth_args + " -S #{license_data['salt']}"
     end
-    cmd_args = "#{auth_args} -d \"#{rule_args}\""
     unless @new_resource.executable.nil?
-      cmd_args = cmd_args + " --exec=#{@new_resource.executable}"
+      rule_args = rule_args + " --exec=#{@new_resource.executable}"
     end
     unless @new_resource.children.nil?
-      cmd_args = cmd_args + " --children=#{@new_resource.children}"
+      rule_args = rule_args + " --children=#{@new_resource.children}"
     end
+    cmd_args = "#{auth_args} -d \"#{rule_args}\""
   else
     Chef::Log.fatal("zncrypt acl: failed to load passphrase from license data from the #{@new_resource.data_bag}, cannot proceed")
     raise
