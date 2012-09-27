@@ -39,22 +39,12 @@ end
 end
 
 unless Dir.entries(node['zncrypt']['zncrypt_mount']).include?('mongodb')
-
   service "mongodb" do
     action :stop
   end
 
-  license = load_license(node['zncrypt']['license_pool'],node['hostname'])
-
-  encrypt_cmd = "ezncrypt -e @mongodb #{node['mongodb']['dbpath']} -P #{license['passphrase']}"
-
-  if license['salt']
-    encrypt_cmd = encrypt_cmd + " -S #{license['salt']}"
-  end
-
   execute "encrypt mongodb data" do
-    command encrypt_cmd
+    command "ezncrypt -e @mongodb #{node['mongodb']['dbpath']}"
     notifies :start, "service[mongodb]", :immediately 
   end
-
 end
