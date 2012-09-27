@@ -26,7 +26,3 @@ default['zncrypt']['zncrypt_mount'] = '/var/lib/ezncrypt/ezncrypted'
 default['zncrypt']['zncrypt_storage'] = '/var/lib/ezncrypt/storage'
 # include `activate` recipe when running default recipe
 default['zncrypt']['use_default_activation'] = false
-
-if attribute?('ec2')
-  default['zncrypt']['ec2_path'] = '/mnt/ezncrypt'
-end
