@@ -20,6 +20,15 @@
 
 include_recipe "mongodb::default"
 
+zncrypt_acl which('chef-client').first do
+  category "mongodb"
+  path "*"
+  permission "ALLOW"
+  executable "/bin/bash"
+  children node['languages']['ruby']['ruby_bin']
+  data_bag node['zncrypt']['license_pool']
+end
+
 %w{mongod mkdir}.each do |proc|
   zncrypt_acl which(proc).first do
     category "mongodb"
@@ -29,7 +38,7 @@ include_recipe "mongodb::default"
   end
 end
 
-unless ::File.exists?(::File.join(node['zncrypt']['zncrypt_mount'],'/',node['mongodb']['dbpath']))
+unless Dir.entries(node['zncrypt']['zncrypt_mount']).include?('mongodb')
 
   service "mongodb" do
     action :stop
