@@ -15,6 +15,8 @@ if (node.attribute?('ec2') && ! FileTest.directory?(node['zncrypt']['ec2_path'])
       not_if do FileTest.directory?(target_dir) end
     end
 
+    directory node['zncrypt']["zncrypt_#{dir}"]
+
     mount node['zncrypt']["zncrypt_#{dir}"] do
       device target_dir
       fstype "none"
