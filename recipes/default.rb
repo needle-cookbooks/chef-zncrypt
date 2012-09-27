@@ -28,26 +28,21 @@ config_dirs = "-m #{node['zncrypt']['zncrypt_mount']} -s #{node['zncrypt']['zncr
 
 case node['platform_family']
 when "rhel","fedora"
- opt = '-l'
+ cmd = "ezncrypt-configure-directories #{config_dirs} -l"
 when "debian"
- opt = '-a'
+ cmd = "ezncrypt-configure-directories #{config_dirs} -a"
 end
 
-script "config dirs" do
- interpreter "bash"
- user "root"
- code <<-EOH
- ezncrypt-service stop
- ezncrypt-configure-directories #{config_dirs} #{opt}
- EOH
-end
-
-# create a resource for managing the ezncrypt service, but don't do anything with it here
 service "ezncrypt" do
-  action :nothing
+  action :stop
 end
 
-# activates the license using the data bag and randomly generated passphrases
-if node['zncrypt']['use_default_activation']
-  include_recipe "zncrypt::activate"
+execute "config dirs" do
+  command cmd
+end
+
+include_recipe "zncrypt::activate"
+
+service "ezncrypt" do
+  action [:enable, :start]
 end
