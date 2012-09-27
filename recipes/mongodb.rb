@@ -18,38 +18,33 @@
 # limitations under the License.
 #
 
-case node['platform_family']
-when "rhel","fedora"
- data_dir="/var/lib/mongo"
- service_name="mongod"
-when "debian"
- data_dir="/var/lib/mongodb"
- service_name="mongodb"
-end
-
-# let the mongodb cookbook do our heavy lifting
 include_recipe "mongodb::default"
 
-# Mongo is installed, we proceed to set up the encryption
-# the path here is hardcoded, if it does not match yours edit here
+%w{mongod mkdir}.each do |proc|
+  zncrypt_acl which(proc).first do
+    category "mongodb"
+    path "*"
+    permission "ALLOW"
+  end
+end
 
-acl_rule1 = which("mongod").first
-acl_rule2 = which("mkdir").first
+unless ::File.exists?(::File.join(node['zncrypt']['zncrypt_mount'],'/',node['mongodb']['dbpath']))
 
-# before anything we stop mongodb
-# create the ACLs
-passphrase=data_bag_item('license_pool', 'license1')['passphrase']
-passphrase2=data_bag_item('license_pool', 'license1')['passphrase2']
-script "create ACL" do
- interpreter "bash"
- user "root"
- cwd "/tmp"
- code <<-EOH
- service #{service_name} stop
- ezncrypt-service start
- ezncrypt-access-control -a "ALLOW @mongodb * #{acl_rule1}" -P #{passphrase} -S #{passphrase2}
- ezncrypt-access-control -a "ALLOW @mongodb * #{acl_rule2}" -P #{passphrase} -S #{passphrase2}
- ezncrypt -e @mongodb #{data_dir}
- service #{service_name} start
- EOH
+  service "mongodb" do
+    action :stop
+  end
+
+  license = load_license(node['zncrypt']['license_pool'])
+
+  encrypt_cmd = "ezncrypt -e @mongodb #{node['mongodb']['dbpath']} -P #{license['passphrase']}"
+
+  if license['salt']
+    encrypt_cmd = encrypt_cmd + " -S #{license['salt']}"
+  end
+
+  execute "encrypt mongodb data" do
+    command encrypt_cmd
+    notifies :start, "service[mongodb]", :immediately 
+  end
+
 end
