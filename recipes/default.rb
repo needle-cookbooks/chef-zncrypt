@@ -33,13 +33,15 @@ when "debian"
  cmd = "ezncrypt-configure-directories #{config_dirs} -a"
 end
 
-service "ezncrypt" do
-  provider Chef::Provider::Service::Upstart
-  action :stop
-end
+unless mounted?(node['zncrypt']['zncrypt_mount'])
+  service "ezncrypt" do
+    provider Chef::Provider::Service::Upstart
+    action :stop
+  end
 
-execute "config dirs" do
-  command cmd
+  execute "config dirs" do
+    command cmd
+  end
 end
 
 include_recipe "zncrypt::activate"
