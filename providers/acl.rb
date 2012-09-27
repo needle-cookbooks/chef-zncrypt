@@ -52,7 +52,7 @@ action :add do
     @new_resource.updated_by_last_action(true)
   when 1
     if cmd_result.stderr == "ERROR: Rule already exists\n"
-      Chef:Log.info("zncrypt acl: rule '#{rule_args}' already exists")
+      Chef::Log.info("zncrypt acl: rule '#{rule_args}' already exists")
       @new_resource.updated_by_last_action(false)
     else
       Chef::Log.fatal("zncrypt acl: failed to add rule '#{rule_args}':\n" + cmd_result.stderr.inspect)
@@ -91,7 +91,7 @@ action :remove do
     @new_resource.updated_by_last_action(true)
   when 1
     if cmd_result.stderr == "ERROR: Rule does not exists\n"
-      Chef:Log.info("zncrypt acl: rule '#{rule_args}' already exists")
+      Chef::Log.info("zncrypt acl: rule '#{rule_args}' already exists")
       @new_resource.updated_by_last_action(false)
     else
       Chef::Log.fatal("zncrypt acl: failed to remove rule '#{rule_args}':\n" + cmd_result.stderr.inspect)
