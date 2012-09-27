@@ -34,6 +34,7 @@ when "debian"
 end
 
 service "ezncrypt" do
+  provider Chef::Provider::Service::Upstart
   action :stop
 end
 
@@ -44,5 +45,6 @@ end
 include_recipe "zncrypt::activate"
 
 service "ezncrypt" do
+  provider Chef::Provider::Service::Upstart
   action [:enable, :start]
 end
