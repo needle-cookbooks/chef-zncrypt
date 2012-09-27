@@ -115,7 +115,6 @@ action :activate do
       code <<-EOH
       ezncrypt-activate #{activate_args}
       EOH
-      notifies :create, "ruby_block[save license for #{node['hostname']} to node object]", :immediately
     end
 
   else
