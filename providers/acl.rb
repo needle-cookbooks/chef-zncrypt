@@ -22,7 +22,7 @@
 
 action :add do
 
-  license_data = load_license(@new_resource.data_bag)
+  license_data = load_license(@new_resource.data_bag,node['hostname'])
 
   if license_data['passphrase']
     rule_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{license_data['passphrase']}}"
@@ -50,7 +50,7 @@ end
 
 action :remove do
 
-  license_data = load_license(@new_resource.data_bag)
+  license_data = load_license(@new_resource.data_bag,node['hostname'])
 
   if license_data['passphrase']
     rule_args = "#{new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process} -P #{license_data['passphrase']}}"

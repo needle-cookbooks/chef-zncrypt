@@ -8,7 +8,7 @@ def ensure_data_bag(bag)
   end
 end
 
-def load_license(bag,hostname=node['hostname'])
+def load_license(bag,hostname)
   begin
     licenses = search(bag, "allocated_to:#{hostname}")
     if licenses.count = 1

@@ -34,7 +34,7 @@ unless ::File.exists?(::File.join(node['zncrypt']['zncrypt_mount'],'/',node['mon
     action :stop
   end
 
-  license = load_license(node['zncrypt']['license_pool'])
+  license = load_license(node['zncrypt']['license_pool'],node['hostname'])
 
   encrypt_cmd = "ezncrypt -e @mongodb #{node['mongodb']['dbpath']} -P #{license['passphrase']}"
 
