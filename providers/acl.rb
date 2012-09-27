@@ -43,6 +43,7 @@ action :add do
   execute "#{@new_resource.permission} #{@new_resource.path} for #{@new_resource.process} in category #{@new_resource.category}" do
     command "ezncrypt-access-control #{cmd_args}"
     action :run
+    returns [0,1]
   end
 end
 
@@ -71,5 +72,6 @@ action :remove do
   execute "#{@new_resource.permission} #{@new_resource.path} for #{@new_resource.process} in category #{@new_resource.category}" do
     command "ezncrypt-access-control #{cmd_args}"
     action :run
+    returns [0,1]
   end
 end
