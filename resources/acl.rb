@@ -27,8 +27,8 @@ actions :add, :remove
 
 attribute :permission, :kind_of => String, :default => "ALLOW", :regex => /(^ALLOW$|^DENY$)/
 attribute :category,   :kind_of => String, :required => true
-attribute :path,       :kind_of => String, :required => true, :default => "*"
-attribute :process,    :kind_of => String, :required => true, :name_attribute => true
+attribute :path,       :kind_of => String, :default => "*"
+attribute :process,    :kind_of => String, :name_attribute => true
 attribute :executable, :kind_of => String
 attribute :children,   :kind_of => String
-attribute :data_bag,   :kind_of => String, :required => true, :default => 'zncrypt_license_pool'
+attribute :data_bag,   :kind_of => String, :required => true
