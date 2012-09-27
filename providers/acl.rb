@@ -23,10 +23,10 @@ action :add do
   license_data = load_license(@new_resource.data_bag,node['hostname'])
 
   if license_data['passphrase']
-    auth_args = "-P #{license_data['passphrase']}}"
+    auth_args = "-P #{license_data['passphrase']}"
     rule_args = "#{@new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process}"
     if license_data['salt']
-      auth_args + " -S #{license_data['salt']}"
+      auth_args = auth_args + " -S #{license_data['salt']}"
     end
     unless @new_resource.executable.nil?
       rule_args = rule_args + " --exec=#{@new_resource.executable}"
@@ -51,10 +51,10 @@ action :remove do
   license_data = load_license(@new_resource.data_bag,node['hostname'])
 
   if license_data['passphrase']
-    auth_args = "-P #{license_data['passphrase']}}"
+    auth_args = "-P #{license_data['passphrase']}"
     rule_args = "#{@new_resource.permission} @#{@new_resource.category} #{@new_resource.path} #{@new_resource.process}"
     if license_data['salt']
-      auth_args + " -S #{license_data['salt']}"
+      auth_args = auth_args + " -S #{license_data['salt']}"
     end
     unless @new_resource.executable.nil?
       rule_args = rule_args + " --exec=#{@new_resource.executable}"
