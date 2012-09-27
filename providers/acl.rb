@@ -20,22 +20,6 @@
 
 @cmd_path = 'ezncrypt-access-control'
 
-def load_license(data_bag)
-  begin
-    licenses = search(data_bag, "allocated_to:#{node['hostname']}")
-    if licenses.count = 1
-      Chef::Log.debug("zncrypt acl: successfully loaded license: \n" + licenses.first )
-      return licenses.first
-    else
-      Chef::Log.fatal("zncrypt acl: found multiple licenses for node #{node['hostname']} in the #{data_bag} data bag, cannot proceed.")
-      raise
-    end
-  rescue
-    Chef::Log.fatal("zncrypt acl: failed to locate a license for node #{node['hostname']} in the #{data_bag} data bag, cannot proceed.")
-    raise
-  end
-end
-
 action :add do
 
   license_data = load_license(@new_resource.data_bag)
