@@ -26,5 +26,3 @@ default['zncrypt']['zncrypt_mount'] = '/var/lib/ezncrypt/ezncrypted'
 default['zncrypt']['zncrypt_storage'] = '/var/lib/ezncrypt/storage'
 # the data bag to use for the license pool
 default['zncrypt']['license_pool'] = 'zncrypt_license_pool'
-# include `activate` recipe when running default recipe
-default['zncrypt']['use_default_activation'] = false
