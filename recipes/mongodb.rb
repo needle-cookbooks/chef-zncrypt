@@ -38,7 +38,7 @@ end
   end
 end
 
-unless Dir.entries(node['zncrypt']['zncrypt_mount']).include?('mongodb')
+unless FileTest.directory?(node['zncrypt']['zncrypt_mount']) and Dir.entries(node['zncrypt']['zncrypt_mount']).include?('mongodb')
   service "mongodb" do
     action :stop
   end
