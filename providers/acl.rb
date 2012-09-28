@@ -51,11 +51,19 @@ action :add do
     Chef::Log.info("zncrypt acl: rule '#{rule_args}' added successfully")
     @new_resource.updated_by_last_action(true)
   when 1
-    if cmd_result.stderr == "ERROR: Rule already exists\n"
+    case cmd_result.stderr
+    when "ERROR: Rule already exists\n"
       Chef::Log.info("zncrypt acl: rule '#{rule_args}' already exists")
       @new_resource.updated_by_last_action(false)
+    when "ERROR: The key provided does not match the key used to encrypt the data\n"
+      Chef::Log.fatal("zncrypt acl: authentication failed")
+      Chef::Log.debug("zncrypt acl: passphrase = #{license_data['passphrase']}")
+      if license_data['salt']
+        Chef::log.debug("zncrypt acl: salt = #{license_data['salt']}")
+      end
+      raise
     else
-      Chef::Log.fatal("zncrypt acl: failed to add rule '#{rule_args}':\n" + cmd_result.stderr.inspect)
+      Chef::Log.fatal("zncrypt acl: failed to add rule '#{rule_args}': " + cmd_result.stderr.inspect.chomp)
       raise
     end
   end
