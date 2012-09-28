@@ -59,7 +59,7 @@ action :add do
       Chef::Log.fatal("zncrypt acl: authentication failed")
       Chef::Log.debug("zncrypt acl: passphrase = #{license_data['passphrase']}")
       if license_data['salt']
-        Chef::log.debug("zncrypt acl: salt = #{license_data['salt']}")
+        Chef::Log.debug("zncrypt acl: salt = #{license_data['salt']}")
       end
       raise
     else
