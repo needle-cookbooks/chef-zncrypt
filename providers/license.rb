@@ -103,9 +103,11 @@ action :activate do
       end
     end
 
-    activate_args="--activate --license=#{@license_data['license']} --activation-code=#{@license_data['activation_code']} --passphrase=#{@license_data['passphrase']}"
+    activate_args = "--activate --license=#{@license_data['license']} --activation-code=#{@license_data['activation_code']} --passphrase=#{@license_data['passphrase']}"
 
-    activate_args + " --passphrase2=#{@license_data['salt']}" if @license_data['salt']
+    if @license_data['salt']
+      activate_args = activate_args + " --passphrase2=#{@license_data['salt']}"
+    end
 
     directory "/var/log/ezncrypt"
 
