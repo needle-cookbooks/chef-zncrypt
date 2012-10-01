@@ -31,4 +31,4 @@ attribute :path,       :kind_of => String, :default => "*"
 attribute :process,    :kind_of => String, :name_attribute => true
 attribute :executable, :kind_of => String
 attribute :children,   :kind_of => String
-attribute :data_bag,   :kind_of => String, :required => true
+attribute :data_bag,   :kind_of => String, :default => 'zncrypt_license_pool'
