@@ -20,9 +20,16 @@
 
 include_recipe "mongodb::default"
 
+chef_bin = case Chef::Config[:solo]
+when true
+  is_omnibus? ? '/opt/chef/bin/chef-solo' : which('chef-solo').first
+when false
+  is_omnibus? ? '/opt/chef/bin/chef-client' : which('chef-client').first
+end
+
 ruby_bin = is_omnibus? ? '/opt/chef/embedded/bin/ruby' : node['languages']['ruby']['ruby_bin']
 
-zncrypt_acl which('chef-client').first do
+zncrypt_acl chef_bin do
   category "mongodb"
   path "*"
   permission "ALLOW"
