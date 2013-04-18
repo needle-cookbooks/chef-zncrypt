@@ -45,6 +45,6 @@ unless FileTest.directory?(node['zncrypt']['zncrypt_mount']) and Dir.entries(nod
 
   execute "encrypt mongodb data" do
     command "ezncrypt -e @mongodb #{node['mongodb']['dbpath']}"
-    notifies :start, "service[mongodb]", :immediately 
+    notifies :start, "service[mongodb]", :immediately
   end
 end
