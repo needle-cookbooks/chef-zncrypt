@@ -20,12 +20,14 @@
 
 include_recipe "mongodb::default"
 
+ruby_bin = is_omnibus? ? '/opt/chef/embedded/bin/ruby' : node['languages']['ruby']['ruby_bin']
+
 zncrypt_acl which('chef-client').first do
   category "mongodb"
   path "*"
   permission "ALLOW"
   executable "/bin/bash"
-  children node['languages']['ruby']['ruby_bin']
+  children ruby_bin
   data_bag node['zncrypt']['license_pool']
 end
 
