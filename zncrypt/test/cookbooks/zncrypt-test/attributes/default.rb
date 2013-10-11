@@ -1,0 +1,5 @@
+default['zncrypt_test']['mount'] = '/var/lib/zncrypt/zncrypted'
+default['zncrypt_test']['storage'] = '/var/lib/zncrypt/storage'
+default['zncrypt_test']['contact_email'] = 'zncrypt-test@example.com'
+default['zncrypt_test']['passphrase'] = 'please_do_not_store'
+default['zncrypt_test']['salt'] = 'real_secrets_in_node_attributes'

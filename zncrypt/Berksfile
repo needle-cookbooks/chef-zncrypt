@@ -1,0 +1,5 @@
+site :opscode
+
+metadata
+
+cookbook 'zncrypt-test', path: './test/cookbooks/zncrypt-test'
