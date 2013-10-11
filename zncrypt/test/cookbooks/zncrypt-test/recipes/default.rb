@@ -45,6 +45,8 @@ zncrypt_storage z_storage do
   salt z_salt
 end
 
+include_recipe 'zncrypt-test::_acls'
+
 directory '/data/secrets' do
   recursive true
 end
@@ -52,8 +54,6 @@ end
 file '/data/secrets/secret.txt' do
   content 'trustno1'
 end
-
-include_recipe 'zncrypt-test::_acls'
 
 zncrypt_move '/data/secrets' do
   mount_point z_mount

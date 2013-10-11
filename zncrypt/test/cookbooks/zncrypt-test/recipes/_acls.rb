@@ -14,12 +14,11 @@ end
 ruby_exe = omnibus ? ::File.join(Gem.bindir, 'ruby') : node['languages']['ruby']['ruby_bin']
 
 # allow chef
-zncrypt_acl chef_exe do
+zncrypt_acl ruby_exe do
   group "trusted"
-  path "*"
+  path "data/secret/*"
   permission "ALLOW"
-  shell "/bin/bash"
-  children ruby_exe
+  children chef_exe
   passphrase z_passphrase
   salt z_salt
 end
