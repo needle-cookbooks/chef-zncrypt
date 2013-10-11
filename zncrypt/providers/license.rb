@@ -32,8 +32,8 @@ action :activate do
       @register_args = "--key-type=single-passphrase --clientname=#{new_resource.client}"
     when
       if new_resource.passphrase && new_resource.salt
-        @register_string = [new_resource.passphrase, new_resource.passphrase, new_resource.salt, new_resource.salt].join("\n")
-        @activate_string = [new_resource.passphrase, new_resource.salt].join("\n")
+        @register_auth_string = [new_resource.passphrase, new_resource.passphrase, new_resource.salt, new_resource.salt].join("\n")
+        @activate_auth_string = [new_resource.passphrase, new_resource.salt].join("\n")
         @register_args = "--key-type=dual-passphrase --clientname=#{new_resource.client}"
       else
         Chef::Application.fatal!("zncrypt key type is 'dual passphrase' but you did not provide a second passphrase (salt)")
