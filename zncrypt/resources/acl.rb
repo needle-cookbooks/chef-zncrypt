@@ -22,7 +22,7 @@ actions :add, :remove
 default_action :add
 
 attribute :permission,    :kind_of => String, :default => "ALLOW", :regex => /(^ALLOW$|^DENY$)/
-attribute :category,      :kind_of => String, :required => true
+attribute :group,         :kind_of => String, :required => true
 attribute :path,          :kind_of => String, :default => "*"
 attribute :process,       :kind_of => String, :name_attribute => true
 attribute :shell,         :kind_of => String

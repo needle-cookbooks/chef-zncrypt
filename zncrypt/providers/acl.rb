@@ -36,7 +36,7 @@ def load_current_resource
 end
 
 action :add do
-  rule_args = "#{new_resource.permission} @#{new_resource.category} #{new_resource.path} #{new_resource.process}"
+  rule_args = "#{new_resource.permission} @#{new_resource.group} #{new_resource.path} #{new_resource.process}"
   unless new_resource.shell.nil?
     rule_args = rule_args + " --shell=#{new_resource.shell}"
   end
@@ -69,7 +69,7 @@ action :add do
 end
 
 action :remove do
-  rule_args = "#{new_resource.permission} @#{new_resource.category} #{new_resource.path} #{new_resource.process}"
+  rule_args = "#{new_resource.permission} @#{new_resource.group} #{new_resource.path} #{new_resource.process}"
   unless new_resource.shell.nil?
     rule_args = rule_args + " --shell=#{new_resource.shell}"
   end
