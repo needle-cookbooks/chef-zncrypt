@@ -1,3 +1,4 @@
+name             "zncrypt"
 maintainer       "Gazzang, Inc."
 maintainer_email "eddie.garcia@gazzang.com"
 license          "Apache 2.0"
