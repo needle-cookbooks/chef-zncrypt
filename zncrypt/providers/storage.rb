@@ -48,6 +48,6 @@ action :prepare do
     prepare_storage.error!
     new_resource.updated_by_last_action(true)
   else
-    Chef::Log.info("zncrypt storage path #{new_resource.storage_path} on #{new_resource.mount_point} is already registered, skipping")
+    Chef::Log.info("zncrypt encrypted file system #{new_resource.storage_path} is already mounted on #{new_resource.mount_point} and registered, skipping")
   end
 end
