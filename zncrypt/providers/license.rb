@@ -21,47 +21,108 @@
 require 'mixlib/shellout'
 include ::Gazzang::Zncrypt::Helpers
 
-action :activate do
+def license_params_valid?(resource)
 
-  unless ::File.exists?('/etc/zncrypt/control') && zncrypt_registered?
+  if resource.passphrase.empty?
+    Chef::Application.fatal!(
+      "zncrypt_license requires a value for the passphrase parameter"
+    )
+  end
 
-    case new_resource.salt
-    when NilClass
-      @register_auth_string = [new_resource.passphrase, new_resource.passphrase].join("\n")
-      @activate_auth_string = "#{new_resource.passphrase}\n"
-      @register_args = "--key-type=single-passphrase --clientname=#{new_resource.client}"
-    when
-      if new_resource.passphrase && new_resource.salt
-        @register_auth_string = [new_resource.passphrase, new_resource.passphrase, new_resource.salt, new_resource.salt].join("\n")
-        @activate_auth_string = [new_resource.passphrase, new_resource.salt].join("\n")
-        @register_args = "--key-type=dual-passphrase --clientname=#{new_resource.client}"
-      else
-        Chef::Application.fatal!("zncrypt key type is 'dual passphrase' but you did not provide a second passphrase (salt)")
-      end
+  case resource.regmode
+  when :regauth
+    if resource.org.empty? || resource.auth.empty?
+      Chef::Application.fatal!(
+        'zncrypt_license requires org and auth parameters when using regauth regmode'
+      )
+    end
+  when :classic
+    if resource.admin_email.empty?
+      Chef::Application.fatal!(
+        'zncrypt_license requires admin_email parameter when using classic regmode'
+      )
+    end
+  end
+
+  return true
+end
+
+def key_type(resource)
+  if license_params_valid?(resource)
+    # if both a passphrase and a salt are provided we are using dual-passphrase
+    if !resource.passphrase.empty? && resource.salt.empty?
+      return 'single-passphrase'
     end
 
-    directory "/var/log/zncrypt"
+    if !resource.passphrase.empty? && !resource.salt.empty?
+      return 'dual-passphrase'
+    else
+      Chef::Application.fatal!(
+        "Could not determine key type for #{resource}"
+      )
+    end
+  end
+end
+
+def register_auth_string(resource)
+  case key_type(resource)
+  when 'single-passphrase'
+    return [resource.passphrase, resource.passphrase].join("\n")
+  when 'dual-passphrase'
+    return [resource.passphrase, resource.passphrase, resource.salt, resource.salt].join("\n")
+  end
+end
+
+def activate_auth_string(resource)
+  case key_type(resource)
+  when 'single-passphrase'
+    return "#{resource.passphrase}\n"
+  when 'dual-passphrase'
+    [resource.passphrase, resource.salt].join("\n")
+  end
+end
+
+def register_args(resource)
+  if license_params_valid?(resource)
+    case resource.regmode
+    when :regauth
+      "--key-type=#{key_type(resource)} --clientname=#{resource.client} \
+      --org=#{resource.org} --auth=#{resource.auth}"
+    when :classic
+      "--key-type=#{key_type(resource)} --clientname=#{resource.client}"
+    end
+  end
+end
+
+
+action :activate do
+  if ::File.exists?('/etc/zncrypt/control') && zncrypt_registered?
+    Chef::Log.info(
+      'zncrypt is already actviated, skipping activation process.'
+    )
+  else
+    directory '/var/log/zncrypt'
 
     # the following make use of printf to avoid logging the passphrase
     register_cmd = Mixlib::ShellOut.new(
-      "zncrypt register #{@register_args}",
-      :input => @register_auth_string,
+      "zncrypt register #{register_args(new_resource)}",
+      :input => register_auth_string(new_resource),
       :log_level => :debug
     )
     register_cmd.run_command
     register_cmd.error!
 
-    activate_cmd = Mixlib::ShellOut.new(
-      "zncrypt request-activation --contact=#{new_resource.admin_email}",
-      :input => @activate_auth_string,
-      :log_level => :debug
-    )
-    activate_cmd.run_command
-    activate_cmd.error!
+    if new_resource.regmode == :classic
+      activate_cmd = Mixlib::ShellOut.new(
+        "zncrypt request-activation --contact=#{new_resource.admin_email}",
+        :input => @activate_auth_string,
+        :log_level => :debug
+        )
+      activate_cmd.run_command
+      activate_cmd.error!
+    end
 
     new_resource.updated_by_last_action(true)
-  else
-    Chef::Log.info('zncrypt is already actviated, skipping activation process.')
   end
 
 end

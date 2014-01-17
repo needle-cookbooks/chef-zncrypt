@@ -22,6 +22,9 @@ actions :activate
 default_action :activate
 
 attribute :client,        :kind_of => String, :name_attribute => true
-attribute :admin_email,   :kind_of => String, :required => true
+attribute :admin_email,   :kind_of => String
 attribute :passphrase,    :kind_of => String, :required => true
 attribute :salt,          :kind_of => [String,NilClass], :default => nil
+attribute :regmode,       :equal_to => [:classic, :regauth], :default => :classic
+attribute :org,           :kind_of => String
+attribute :auth,          :kind_of=> String
