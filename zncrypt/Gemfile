@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'foodcritic'
+gem 'foodcritic', '~> 3.0.0'
 gem 'berkshelf'
-gem 'test-kitchen', '~> 1.0.0.beta'
+gem 'test-kitchen', '~> 1.1.0'
 gem 'kitchen-vagrant'
+gem 'rubocop', '~> 0.15.0'
+gem 'rubocop-checkstyle_formatter'
