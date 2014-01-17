@@ -1,2 +1,14 @@
+.vagrant
+apt
+Berksfile.lock
+Gemfile.lock
+*~
+*#
+.#*
+\#*#
+.*.sw[a-z]
+*.un~
+.DS_Store
+/cookbooks
 .kitchen/
 .kitchen.local.yml
