@@ -24,4 +24,6 @@ platforms:
 suites:
 - name: default
   run_list: ["zncrypt-test::default"]
-  attributes: {}
+  attributes:
+    zncrypt_test:
+      admin_email: <%= ENV['TK_ZNCRYPT_ADMIN_EMAIL'] %>
