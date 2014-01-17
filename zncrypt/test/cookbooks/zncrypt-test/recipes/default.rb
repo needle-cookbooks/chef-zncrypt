@@ -27,7 +27,7 @@ package "haveged"
 include_recipe "zncrypt::zncrypt"
 
 zncrypt_license node['fqdn'] do
-  admin_email node['zncrypt_test']['contact_email']
+  admin_email node['zncrypt_test']['admin_email']
   passphrase z_passphrase
   salt z_salt
   action :activate
