@@ -15,3 +15,9 @@ suites:
   attributes:
     zncrypt_test:
       admin_email: <%= ENV['TK_ZNCRYPT_ADMIN_EMAIL'] %>
+- name: regauth
+  run_list: ["zncrypt-test::regauth"]
+  attributes:
+    zncrypt_test:
+      org_name: <%= ENV['TK_ZNCRYPT_ORG_NAME'] %>
+      org_auth: <%= ENV['TK_ZNCRYPT_ORG_AUTH'] %>
