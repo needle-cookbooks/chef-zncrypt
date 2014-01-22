@@ -29,8 +29,8 @@ include_recipe "zncrypt::zncrypt"
 zncrypt_license node['fqdn'] do
   passphrase z_passphrase
   salt z_salt
-  org node['zncrypt_test']['org_name']
-  auth node['zncrypt_test']['org_auth']
+  orgname node['zncrypt_test']['org_name']
+  authcode node['zncrypt_test']['org_auth']
   regmode :regauth
   action :activate
 end

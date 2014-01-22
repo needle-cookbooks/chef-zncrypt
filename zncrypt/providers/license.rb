@@ -31,7 +31,7 @@ def license_params_valid?(resource)
 
   case resource.regmode
   when :regauth
-    if resource.org.empty? || resource.auth.empty?
+    if resource.orgname.empty? || resource.authcode.empty?
       Chef::Application.fatal!(
         'zncrypt_license requires org and auth parameters when using regauth regmode'
       )
@@ -87,7 +87,7 @@ def register_args(resource)
     case resource.regmode
     when :regauth
       "--key-type=#{key_type(resource)} --clientname=#{resource.client} \
-      --org=#{resource.org} --auth=#{resource.auth}"
+      --org=#{resource.orgname} --auth=#{resource.authcode}"
     when :classic
       "--key-type=#{key_type(resource)} --clientname=#{resource.client}"
     end
