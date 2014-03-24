@@ -49,12 +49,23 @@ end
 
 def key_type(resource)
   if license_params_valid?(resource)
-    # if both a passphrase and a salt are provided we are using dual-passphrase
-    if !resource.passphrase.empty? && resource.salt.empty?
+
+    passphrase_provided = resource.passphrase.nil? || resource.passphrase.empty? ? false : true
+    salt_provided = resource.salt.nil? || resource.salt.empty? ? false : true
+
+    unless passphrase_provided
+      Chef::Application.fatal!(
+        'zncrypt_license requires a passphrase'
+      )
+    end
+
+    # if a passphrase is provided without a salt, we are using single-passphrase
+    if passphrase_provided && !salt_provided
       return 'single-passphrase'
     end
 
-    if !resource.passphrase.empty? && !resource.salt.empty?
+    # if both a passphrase and a salt are provided, we are using dual-passphrase
+    if passphrase_provided && salt_provided
       return 'dual-passphrase'
     else
       Chef::Application.fatal!(
