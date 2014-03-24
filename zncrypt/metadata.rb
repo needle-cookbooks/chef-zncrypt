@@ -4,7 +4,7 @@ maintainer_email "eddie.garcia@gazzang.com"
 license          "Apache 2.0"
 description      "Installs/Configures zNcrypt 3.x"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.4.0"
+version          "0.4.1"
 %w{ apt yum openssl java }.each do |cb|
   depends cb
 end
